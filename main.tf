@@ -147,3 +147,34 @@ resource "aws_athena_workgroup" "main" {
     }
   }
 }
+
+# S3 Bucket Policy — grant Amazon QuickSight read access
+resource "aws_s3_bucket_policy" "quicksight_access" {
+  bucket = aws_s3_bucket.athena.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "QuickSightReadAccess"
+        Effect = "Allow"
+        Principal = {
+          Service = "quicksight.amazonaws.com"
+        }
+        Action = [
+          "s3:GetObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          aws_s3_bucket.athena.arn,
+          "${aws_s3_bucket.athena.arn}/*"
+        ]
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = data.aws_caller_identity.current.account_id
+          }
+        }
+      }
+    ]
+  })
+}

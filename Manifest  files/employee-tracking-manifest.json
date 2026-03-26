@@ -1,0 +1,13 @@
+{
+    "fileLocations": [
+        {
+            "URIPrefixes": [
+		"https://megazone-athena-bucket-karl-makuvaro2.s3.us-east-1.amazonaws.com/Query-Results/"
+            ]
+        }
+    ],
+    "globalUploadSettings": {
+        "format": "CSV",
+	"textqualifier": "\""
+    }
+}

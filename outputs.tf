@@ -19,19 +19,29 @@ output "connector_lambda_arn" {
 }
 
 output "sample_query" {
-  description = "Example SQL query demonstrating CROSS JOIN UNNEST and LEFT JOIN across both DynamoDB tables"
+  description = "Example SQL query demonstrating a federated LEFT JOIN across both DynamoDB tables filtered to assigned employees"
   value       = <<-EOT
     SELECT
-        e.employeeId,
-        e.name,
-        a.projectId,
-        a.role,
-        a.startDate AS assignmentStart,
-        p.projectName,
-        p.status AS projectStatus
-    FROM "dynamodb"."default"."megazone-resource-planner-production-employees" e
+      e.employeeId,
+      e.fullName,
+      e.assignmentStatus,
+      e.role,
+      e.department,
+      a.projectName,
+      p.projectDescription,
+      p.status,
+      p.clientName,
+      a.role AS assignedRole,
+      a.weeklyHours,
+      a.duration,
+      p.startDate,
+      a.rate,
+      a.vendor,
+      a.projectId
+    FROM "default"."megazone-resource-planner-production-employees" e
     CROSS JOIN UNNEST(e.currentAssignments) AS t(a)
-    LEFT JOIN "dynamodb"."default"."megazone-resource-planner-production-projects" p
-        ON a.projectId = p.projectId
+    LEFT JOIN "default"."megazone-resource-planner-production-projects" p
+      ON a.projectId = p.projectId
+    ORDER BY e.fullName;
   EOT
 }

@@ -53,26 +53,39 @@ module "athena_dynamodb" {
 Once the module is applied, you can run the following query in the Athena workgroup to join employee assignments with project details:
 
 ```sql
-SELECT
-    e.employeeId,
-    e.name,
-    a.projectId,
-    a.role,
-    a.startDate AS assignmentStart,
-    p.projectName,
-    p.status AS projectStatus
-FROM "dynamodb"."default"."megazone-resource-planner-production-employees" e
-CROSS JOIN UNNEST(e.currentAssignments) AS t(a)
-LEFT JOIN "dynamodb"."default"."megazone-resource-planner-production-projects" p
-    ON a.projectId = p.projectId
+    SELECT
+      e.employeeId,
+      e.fullName,
+      e.assignmentStatus,
+      e.role,
+      e.department,
+      a.projectName,
+      p.projectDescription,
+      p.status,
+      p.clientName,
+      a.role AS assignedRole,
+      a.weeklyHours,
+      a.duration,
+      p.startDate,
+      a.rate,
+      a.vendor,
+      a.projectId
+    FROM "default"."megazone-resource-planner-production-employees" e
+    CROSS JOIN UNNEST(e.currentAssignments) AS t(a)
+    LEFT JOIN "default"."megazone-resource-planner-production-projects" p
+      ON a.projectId = p.projectId
+    ORDER BY e.fullName;
 ```
 
 This query:
 
-1. Reads from the employees table via the `dynamodb` federated catalog
-2. Flattens the nested `currentAssignments` list into individual rows using `CROSS JOIN UNNEST`
-3. Joins each assignment to the projects table on `projectId` using `LEFT JOIN`
-4. Requires Athena engine v3 (configured by the workgroup) for federated query and UNNEST support
+1. Reads from the employees table via the `dynamodb-karl-makuvaro` federated catalog
+2. Filters to only assigned employees
+3. Joins to the projects table to show project details alongside employee info
+4. Uses lowercase column names as the DynamoDB connector lowercases all attribute names
+5. Requires Athena engine v3 (configured by the workgroup) for federated query support
+
+> **Note:** The `currentAssignments` attribute is a DynamoDB List of Maps (complex nested type) which the Athena DynamoDB connector may not expose as an unnestable array. To query nested assignment details, consider exporting the data to S3 via AWS Glue and querying with standard Athena.
 
 ## Architecture
 
