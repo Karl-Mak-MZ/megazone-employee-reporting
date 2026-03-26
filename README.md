@@ -10,9 +10,7 @@ The module deploys the AWS-provided [AthenaDynamoDBConnector](https://serverless
 
 - Terraform >= 1.0
 - AWS provider >= 5.0
-- Two pre-existing DynamoDB tables in the target AWS account and region:
-  - `megazone-resource-planner-production-employees` — contains employee records with a nested `currentAssignments` list attribute
-  - `megazone-resource-planner-production-projects` — contains project records keyed by `projectId`
+- Two pre-existing DynamoDB tables in the target AWS account and region
 
 ## Usage
 
@@ -20,10 +18,10 @@ The module deploys the AWS-provided [AthenaDynamoDBConnector](https://serverless
 module "athena_dynamodb" {
   source = "./"
 
-  aws_region         = "ap-northeast-2"
-  bucket_name        = "megazone-athena-bucket"
-  workgroup_name     = "megazone-dynamodb-workgroup"
-  catalog_name       = "dynamodb"
+  aws_region         = "us-east-1"
+  bucket_name        = "megazone-athena-bucket-karl-makuvaro2"
+  workgroup_name     = "megazone-dynamodb-workgroup-karl-makuvaro"
+  catalog_name       = "dynamodb-karl-makuvaro"
   lambda_memory_size = 1024
   lambda_timeout     = 900
 }
@@ -33,10 +31,10 @@ module "athena_dynamodb" {
 
 | Variable | Type | Default | Description |
 |---|---|---|---|
-| `aws_region` | `string` | `"ap-northeast-2"` | AWS region for all resources |
-| `bucket_name` | `string` | `"megazone-athena-bucket"` | Name for the S3 bucket (query results + spill data) |
-| `workgroup_name` | `string` | `"megazone-dynamodb-workgroup"` | Name for the Athena workgroup |
-| `catalog_name` | `string` | `"dynamodb"` | Name for the Athena data catalog |
+| `aws_region` | `string` | `"us-east-1"` | AWS region for all resources |
+| `bucket_name` | `string` | `"megazone-athena-bucket-karl-makuvaro2"` | Name for the S3 bucket (query results + spill data) |
+| `workgroup_name` | `string` | `"megazone-dynamodb-workgroup-karl-makuvaro"` | Name for the Athena workgroup |
+| `catalog_name` | `string` | `"dynamodb-karl-makuvaro"` | Name for the Athena data catalog |
 | `lambda_memory_size` | `number` | `1024` | Memory in MB for the DynamoDB connector Lambda function |
 | `lambda_timeout` | `number` | `900` | Timeout in seconds for the DynamoDB connector Lambda function |
 
