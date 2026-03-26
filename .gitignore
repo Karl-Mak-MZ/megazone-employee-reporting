@@ -35,3 +35,9 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# Terraform lock file
+.terraform.lock.hcl
+
+# Kiro IDE
+.kiro/
